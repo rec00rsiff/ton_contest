@@ -29,8 +29,6 @@ cell pack_data(int public_key1, int public_key2) method_id {
 
     throw_if(502, valid_until < now());
 
-    accept_message();
-
     ;;ttl clamp, optional
     if(valid_until - now() > 64) {
         valid_until = now() + 64;
@@ -43,14 +41,16 @@ cell pack_data(int public_key1, int public_key2) method_id {
         (slice rdat, int f) = sent_dict1.udict_get?(256, req_hash);
         throw_if(503, f);
 
-        sent_dict1.udict_set_builder(256, req_hash, begin_cell().store_uint(0, 1));
+        sent_dict1~udict_set_builder(256, req_hash, begin_cell().store_uint(0, 1));
     }
     else {
         (slice rdat, int f) = sent_dict2.udict_get?(256, req_hash);
         throw_if(503, f);
 
-        sent_dict2.udict_set_builder(256, req_hash, begin_cell().store_uint(0, 1));
+        sent_dict2~udict_set_builder(256, req_hash, begin_cell().store_uint(0, 1));
     }
+
+    accept_message();
 
     cell pdict = data_slice~load_dict();
 
